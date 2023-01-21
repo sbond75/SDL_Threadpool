@@ -1,15 +1,22 @@
 #include "SDLThreadpool.h"
 
+#include <EnergeticEngine/EEErrors.h>
+
 SDLThreadpool::SDLThreadpool()
 {
     maxThreads = SDL_GetCPUCount();
     pool = new SDL_Thread*[maxThreads];
 
+	static const size_t bufSize = 32;
     for(int i = 0; i < maxThreads; ++i)
     {
-        char name[32];
-        sprintf(name,"pool%d", i);
-        SDL_CreateThread(poolFunc, name, this);
+        char name[bufSize];
+        snprintf(name, bufSize, "pool%d", i);
+        SDL_Thread* thread = SDL_CreateThread(poolFunc, name, this);
+		if (NULL == thread) { // https://wiki.libsdl.org/SDL_GetThreadID
+			ee::fatalError("SDL_CreateThread failed: " + std::string(SDL_GetError()) + "\n");
+			//exit(-1);
+		}
     }
 }
 
@@ -25,7 +32,8 @@ void SDLThreadpool::addJob(Updateable* job)
 
 void SDLThreadpool::closePool(void)
 {
-    Event* death[maxThreads];
+    //Event* death[maxThreads];
+	Event** death = (Event**)alloca(sizeof(Event*) * maxThreads);
 
     for(int i = 0; i < maxThreads; ++i)
     {
@@ -53,5 +61,6 @@ void SDLThreadpool::process(void)
     {
         Updateable* job = queue.pop();
         status = job->update();
+		delete job;
     }
 }
