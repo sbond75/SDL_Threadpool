@@ -12,6 +12,7 @@ class Event
 
     public:
         Event(void);
+		~Event();
 
         void trigger(void);
         void wait(void);

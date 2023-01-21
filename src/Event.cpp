@@ -7,6 +7,12 @@ Event::Event(void)
     triggered = false;
 }
 
+Event::~Event()
+{
+	SDL_DestroyMutex(mut);
+	SDL_DestroyCond(cond);
+}
+
 void Event::trigger(void)
 {
     SDL_LockMutex(mut);

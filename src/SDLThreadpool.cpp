@@ -44,6 +44,7 @@ void SDLThreadpool::closePool(void)
     for(int i = 0; i < maxThreads; ++i)
     {
         death[i]->wait();
+		delete death[i];
     }
 }
 
