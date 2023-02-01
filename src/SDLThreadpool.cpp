@@ -2,9 +2,8 @@
 
 #include <EnergeticEngine/EEErrors.h>
 
-SDLThreadpool::SDLThreadpool()
+SDLThreadpool::SDLThreadpool(int maxThreads)
 {
-    maxThreads = SDL_GetCPUCount();
     pool = new SDL_Thread*[maxThreads];
 
 	static const size_t bufSize = 32;

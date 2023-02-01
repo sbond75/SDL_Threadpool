@@ -40,7 +40,7 @@ class SDLThreadpool
         void process(void);
 
     public:
-        SDLThreadpool(void);
+        SDLThreadpool(int maxThreads = SDL_GetCPUCount());
         ~SDLThreadpool(void);
 
         void addJob(Updateable* job);
